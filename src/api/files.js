@@ -17,7 +17,7 @@ export async function uploadFile(file, onProgress, token) {
   formData.append("file", file);
 
   await axios.post(`${API_BASE_URL}/upload`, formData, {
-    headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}` },
     onUploadProgress: (evt) => {
       if (evt.total) {
         const percent = Math.round((evt.loaded / evt.total) * 100);

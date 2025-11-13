@@ -25,6 +25,7 @@ export const initKeycloak = (onAuthenticatedCallback) => {
       onLoad: 'login-required',
       checkLoginIframe: false,
       pkceMethod: 'S256',
+      audience: 'frontend'
     })
     .then((authenticated) => {
       if (!authenticated) {
@@ -35,9 +36,7 @@ export const initKeycloak = (onAuthenticatedCallback) => {
 
         // Schedule token refresh
         setInterval(() => {
-          keycloak
-            .updateToken(60)
-            .then((refreshed) => {
+          keycloak.updateToken(60).then((refreshed) => {
               if (refreshed) {
                 localStorage.setItem('token', keycloak.token);
                 localStorage.setItem('refreshToken', keycloak.refreshToken);

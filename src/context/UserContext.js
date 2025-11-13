@@ -8,22 +8,31 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
     initKeycloak(async () => {
-      try {
-        setAuthenticated(keycloak.authenticated);
-        const token = keycloak.token;
+        keycloak.onTokenExpired = () => {
+            keycloak.updateToken(30).then((refreshed) => {
+                if (refreshed) {
+                setToken(keycloak.token);
+                }
+            });
+        };
+        try {
+            setAuthenticated(keycloak.authenticated);
+            const token = keycloak.token;
+            setToken(token);
 
-        const userData = await syncUser(token);
+            const userData = await syncUser(token);
 
-        // const userData = await getUserInfo(token);
-        setUser(userData);
-      } catch (error) {
-        console.error("User initialization failed:", error);
-      } finally {
-        setLoading(false);
-      }
+            // const userData = await getUserInfo(token);
+            setUser(userData);
+        } catch (error) {
+            console.error("User initialization failed:", error);
+        } finally {
+            setLoading(false);
+        }
     });
   }, []);
 
@@ -32,7 +41,7 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, setUser, authenticated, logout, loading }}>
+    <UserContext.Provider value={{ user, setUser, authenticated, logout, loading, token }}>
       {children}
     </UserContext.Provider>
   );

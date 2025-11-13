@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useEffect, useState, useContext } from "react";
 import UploadZone from "./components/UploadZone";
 import FileList from "./components/FileList";
@@ -10,7 +9,7 @@ export default function App() {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState(null);
-  const { user, authenticated, logout, loading } = useContext(UserContext);
+  const { user, authenticated, logout, loading, token } = useContext(UserContext);
 
   useEffect(() => {
     if (authenticated) {
@@ -20,7 +19,7 @@ export default function App() {
 
   async function loadFiles() {
     try {
-      const data = await fetchFiles();
+      const data = await fetchFiles(token);
       setFiles(data);
     } catch (err) {
       setError("Could not load files. Is your file-service running?");
@@ -33,7 +32,7 @@ export default function App() {
     setUploading(true);
     setUploadProgress(0);
     try {
-      await uploadFile(file, setUploadProgress);
+      await uploadFile(file, setUploadProgress, token);
       await loadFiles();
     } catch (err) {
       console.error(err);
@@ -47,7 +46,7 @@ export default function App() {
   async function handleDelete(id) {
     if (!window.confirm("Delete this file?")) return;
     try {
-      await deleteFile(id);
+      await deleteFile(id, token);
       await loadFiles();
     } catch (err) {
       console.error(err);
@@ -57,7 +56,7 @@ export default function App() {
 
   async function handleShare(id) {
     try {
-      const url = await createShare(id);
+      const url = await createShare(id, token);
       setFiles((prev) =>
         prev.map((f) => (f.id === id ? { ...f, share_url: url } : f))
       );
