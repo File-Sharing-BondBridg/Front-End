@@ -33,3 +33,15 @@ export async function getUserInfo(token) {
     throw err;
   }
 }
+
+export async function deleteAccount(token) {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/users/me`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("Account deletion failed:", err);
+    throw err;
+  }
+}

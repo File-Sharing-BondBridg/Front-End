@@ -3,6 +3,7 @@ import UploadZone from "./components/UploadZone";
 import FileList from "./components/FileList";
 import { fetchFiles, uploadFile, deleteFile, createShare } from "./api/files";
 import { UserContext } from "./context/UserContext";
+import { deleteAccount } from "./api/users";
 
 export default function App() {
   const [files, setFiles] = useState([]);
@@ -10,6 +11,7 @@ export default function App() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState(null);
   const { user, authenticated, logout, loading, token } = useContext(UserContext);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     if (authenticated) {
@@ -66,6 +68,22 @@ export default function App() {
     }
   }
 
+  async function handleDeleteAccount() {
+    if (!window.confirm("Are you ABSOLUTELY sure you want to delete your account? This cannot be undone.")) {
+      return;
+    }
+
+    setError(null);
+    try {
+      await deleteAccount(token);
+      alert("Your account has been deleted.");
+      logout(); // Keycloak logout + redirect
+    } catch (err) {
+      console.error(err);
+      setError("Failed to delete account. Please try again.");
+    }
+  }
+
   if (loading) {
     return <div className="text-center mt-20 text-gray-600">Loading...</div>;
   }
@@ -90,6 +108,12 @@ export default function App() {
                 className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
               >
                 Logout
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                className="bg-red-700 text-white px-3 py-1 rounded hover:bg-red-800 transition font-medium"
+              >
+                Delete Account
               </button>
             </div>
           )}
