@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const API_BASE_URL = process.env.REACT_APP_USER_SERVICE_URL || 'http://localhost:8084';
+console.log("User Service API Base URL:", API_BASE_URL);
 
 export async function syncUser(token) {
   try {

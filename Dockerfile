@@ -9,6 +9,12 @@ RUN npm ci --only=production
 
 # Copy source and build
 COPY . .
+
+ARG REACT_APP_API_URL=http://file-service/api
+ARG REACT_APP_USER_SERVICE_URL=http://user-service
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+ENV REACT_APP_USER_SERVICE_URL=$REACT_APP_USER_SERVICE_URL
+
 RUN npm run build
 
 # Serve with Nginx
