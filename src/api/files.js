@@ -13,9 +13,10 @@ export async function fetchFiles(token) {
   return res.data;
 }
 
-export async function uploadFile(file, onProgress, token) {
+export async function uploadFile(files, onProgress, token) {
   const formData = new FormData();
-  formData.append("file", file);
+
+  files.forEach((f) => formData.append("files", f));
 
   await axios.post(`${API_BASE_URL}/upload`, formData, {
     headers: { Authorization: `Bearer ${token}` },
@@ -27,6 +28,7 @@ export async function uploadFile(file, onProgress, token) {
     },
   });
 }
+
 
 export async function deleteFile(id, token) {
   await axios.delete(`${API_BASE_URL}/files/${id}/delete`, {

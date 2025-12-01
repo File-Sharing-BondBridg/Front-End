@@ -29,12 +29,13 @@ export default function App() {
     }
   }
 
-  async function handleUpload(file) {
+  async function handleUpload(files) {
     setError(null);
     setUploading(true);
     setUploadProgress(0);
+
     try {
-      await uploadFile(file, setUploadProgress, token);
+      await uploadFile(files, setUploadProgress, token);
       await loadFiles();
     } catch (err) {
       console.error(err);
@@ -44,6 +45,7 @@ export default function App() {
       setUploadProgress(0);
     }
   }
+
 
   async function handleDelete(id) {
     if (!window.confirm("Delete this file?")) return;

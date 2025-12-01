@@ -11,41 +11,43 @@ export default function UploadZone({
   const fileInputRef = React.useRef(null);
 
   function onFileSelect(e) {
-    const f = e.target.files[0];
-    if (f) onUpload(f);
+    const fs = Array.from(e.target.files);
+    if (fs.length > 0) onUpload(fs);
   }
+
   function onDrop(e) {
     e.preventDefault();
     setDragActive(false);
-    const f = e.dataTransfer.files[0];
-    if (f) onUpload(f);
+    const fs = Array.from(e.dataTransfer.files);
+    if (fs.length > 0) onUpload(fs);
   }
 
   return (
     <section className="mb-6">
       <div
         onDrop={onDrop}
-        onDragOver={(e) => e.preventDefault() || setDragActive(true)}
+        onDragOver={(e) => (e.preventDefault(), setDragActive(true))}
         onDragLeave={() => setDragActive(false)}
         className={`border-2 border-dashed rounded-lg p-6 text-center transition ${
-          dragActive
-            ? "border-indigo-400 bg-indigo-50"
-            : "border-gray-200 bg-white"
+          dragActive ? "border-indigo-400 bg-indigo-50" : "border-gray-200 bg-white"
         }`}
       >
         <input
           ref={fileInputRef}
           type="file"
+          multiple
           className="hidden"
           onChange={onFileSelect}
         />
-        <p className="text-gray-700 mb-3">Drag & drop a file here, or</p>
+
+        <p className="text-gray-700 mb-3">Drag & drop files here, or</p>
+
         <div className="flex justify-center gap-3">
           <button
             className="px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-700"
             onClick={() => fileInputRef.current?.click()}
           >
-            Select file
+            Select files
           </button>
           <button
             className="px-4 py-2 rounded border hover:bg-gray-100"
@@ -54,9 +56,13 @@ export default function UploadZone({
             Refresh list
           </button>
         </div>
+
+        {/* Upload progress UI */}
         {uploading && (
           <div className="mt-4">
-            <div className="text-sm mb-1">Uploading... {uploadProgress}%</div>
+            <div className="text-sm mb-1">
+              Uploading... {uploadProgress}%
+            </div>
             <div className="w-full bg-gray-200 rounded h-2 overflow-hidden">
               <div
                 style={{ width: `${uploadProgress}%` }}
@@ -65,6 +71,7 @@ export default function UploadZone({
             </div>
           </div>
         )}
+
         {error && <div className="mt-3 text-sm text-red-600">{error}</div>}
       </div>
     </section>
