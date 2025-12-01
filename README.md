@@ -68,3 +68,24 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Datadog Real User Monitoring (RUM)
+
+- **Purpose:** Capture front-end user telemetry and session replay in Datadog.
+- **Application ID:** `86a08ec0-290a-4fc5-90db-dc0253943433` (already wired into the app).
+- **Client token:** set `REACT_APP_DD_CLIENT_TOKEN` (required) before starting the app.
+- **Optional env vars:**
+	- `REACT_APP_DD_SITE` — Datadog site/region (default: `datadoghq.com`, set to `datadoghq.eu` for EU customers).
+	- `REACT_APP_DD_SERVICE` — service name (default: `file-sharing-frontend`).
+	- `REACT_APP_DD_ENV` — environment name (default: `development` or `NODE_ENV`).
+	- `REACT_APP_DD_DEBUG` — set to `true` to enable a small debug check that emits a test action.
+
+Example (Windows PowerShell):
+
+```powershell
+$env:REACT_APP_DD_CLIENT_TOKEN='pub0xxxxxxxxxxxxxxxxxxxx'
+$env:REACT_APP_DD_ENV='development'
+npm start
+```
+
+If `REACT_APP_DD_CLIENT_TOKEN` is not set the app will continue to run but Datadog RUM will be disabled.
